@@ -376,12 +376,12 @@ class SystemAdministrationHandler( WebHandler ):
       fText = prefix
 
     if len( success ) > 0 and len( failure ) > 0:
-      sMessage = "%s %sed successfully: " % ( sText , action , success )
+      sMessage = "%s %s %sed successfully: " % ( sText , success, action )
       fMessage = "Failed to %s %s:\n%s" % ( action , fText , failure )
       result = sMessage + "\n\n" + fMessage
       return { "success" : "true" , "result" : result }
     elif len( success ) > 0 and len( failure ) < 1:
-      result = "%s %sed successfully: %s" % ( sText , action , success )
+      result = "%s %s %sed successfully: %s" % ( sText , success, action )
       return { "success" : "true" , "result" : result }
     elif len( success ) < 1 and len( failure ) > 0:
       result = "Failed to %s %s:\n%s" % ( action , fText , failure )
