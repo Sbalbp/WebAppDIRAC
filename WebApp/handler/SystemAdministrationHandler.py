@@ -11,6 +11,8 @@ from DIRAC.Core.Utilities import Time
 from DIRAC.Core.Utilities.List import uniqueElements
 import json
 import datetime
+import re
+import ast
 import DIRAC.ConfigurationSystem.Client.Helpers.Registry as Registry
 
 class SystemAdministrationHandler( WebHandler ):
@@ -252,6 +254,10 @@ class SystemAdministrationHandler( WebHandler ):
       gLogger.always( result )
 
       if not result[ "OK" ]:
+        pattern = re.compile( "{.*}" )
+        searchResult = pattern.search( result[ 'Message' ] )
+        if searchResult:
+          result[ 'Message' ] = pattern.split( result[ 'Message' ] )[0] + ' ' + ast.literal_eval( result[ 'Message' ][ searchResult.start() : searchResult.end() ] )[ 'Message' ]
         if result[ "Message" ].find( "Unexpected EOF" ) > 0:
           msg = "Signal 'Unexpected EOF' received. Most likely DIRAC components"
           msg = i + ": " + msg + " were successfully restarted."
@@ -376,12 +382,12 @@ class SystemAdministrationHandler( WebHandler ):
       fText = prefix
 
     if len( success ) > 0 and len( failure ) > 0:
-      sMessage = "%s %s %sed successfully: " % ( sText , success, action )
+      sMessage = "%s %s %sed successfully " % ( sText , success, action )
       fMessage = "Failed to %s %s:\n%s" % ( action , fText , failure )
       result = sMessage + "\n\n" + fMessage
       return { "success" : "true" , "result" : result }
     elif len( success ) > 0 and len( failure ) < 1:
-      result = "%s %s %sed successfully: %s" % ( sText , success, action )
+      result = "%s %s %sed successfully " % ( sText , success, action )
       return { "success" : "true" , "result" : result }
     elif len( success ) < 1 and len( failure ) > 0:
       result = "Failed to %s %s:\n%s" % ( action , fText , failure )
