@@ -245,7 +245,7 @@ class SystemAdministrationHandler( WebHandler ):
       elif action == "revert":
         result = yield self.threadTask( client.revertSoftware )
       elif action == "updat":
-        result = yield self.threadTask( client.updateSoftware( version, '', '', timeout = 300 ) )
+        result = yield self.threadTask( client.updateSoftware, version, '', '', timeout = 300 )
       else:
         error = i + ": Action %s is not defined" % action
         actionFailed.append( error )
@@ -259,7 +259,7 @@ class SystemAdministrationHandler( WebHandler ):
         if searchResult:
           result[ 'Message' ] = pattern.split( result[ 'Message' ] )[0] + ' ' + ast.literal_eval( result[ 'Message' ][ searchResult.start() : searchResult.end() ] )[ 'Message' ]
         if result[ "Message" ].find( "Unexpected EOF" ) > 0:
-          msg = "Signal 'Unexpected EOF' received. Most likely DIRAC components"
+          msg = "Signal 'Unexpected EOF' received: %s. Most likely DIRAC components" % result['Message']
           msg = i + ": " + msg + " were successfully restarted."
           actionSuccess.append( msg )
           continue
@@ -382,7 +382,7 @@ class SystemAdministrationHandler( WebHandler ):
       fText = prefix
 
     if len( success ) > 0 and len( failure ) > 0:
-      sMessage = "%s %s %sed successfully " % ( sText , success, action )
+      sMessage = "%s %sed successfully: %s" % ( sText , action , success )
       fMessage = "Failed to %s %s:\n%s" % ( action , fText , failure )
       result = sMessage + "\n\n" + fMessage
       return { "success" : "true" , "result" : result }

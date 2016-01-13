@@ -96,11 +96,7 @@ class JobMonitorHandler( WebHandler ):
         prods = result["Value"]
         if len( prods ) > 0:
           prods.sort( reverse = True )
-          prod = [ [ i ] for i in prods ]
-          if  len( prod ) > 10000:
-            prod = prod[0:1000]
-            message = "The job monitor selector contains to many rows: %s. Note: Only 1000 rows are returned!" % ( len(prod) )
-            gLogger.warn( message )
+          prod = [ [ i ] for i in prods if i.startswith('00')]
         else:
           prod = [["Nothing to display"]]
       else:
@@ -476,6 +472,8 @@ class JobMonitorHandler( WebHandler ):
       selector = "JobGroup"
     elif selector == "Owner Group":
       selector = "OwnerGroup"
+    elif selector == "Job Type":
+      selector = "JobType"
     
     result = yield self.threadTask( RPC.getJobStats, selector, req )
 
