@@ -387,7 +387,7 @@ class SystemAdministrationHandler( WebHandler ):
       result = sMessage + "\n\n" + fMessage
       return { "success" : "true" , "result" : result }
     elif len( success ) > 0 and len( failure ) < 1:
-      result = "%s %s %sed successfully " % ( sText , success, action )
+      result = "%s %sed successfully: %s" % ( sText , action , success )
       return { "success" : "true" , "result" : result }
     elif len( success ) < 1 and len( failure ) > 0:
       result = "Failed to %s %s:\n%s" % ( action , fText , failure )
